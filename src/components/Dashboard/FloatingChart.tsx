@@ -77,13 +77,8 @@ export function FloatingChart() {
             fill="none"
             stroke="currentColor"
             strokeWidth="0.5"
-            className="text-lime-400 group-hover:text-lime-300 transition-colors duration-300"
+            className="text-lime-400 group-hover:text-lime-300 transition-colors duration-300 animate-pulse"
             filter="url(#glow)"
-            style={{
-              animation: 'dash 20s linear infinite',
-              strokeDasharray: '200',
-              strokeDashoffset: '200'
-            }}
           />
           
           {/* Data points */}
@@ -127,9 +122,8 @@ export function FloatingChart() {
               y2={`${(i + 1) * 20}%`}
               stroke="currentColor"
               strokeWidth="0.5"
-              className="text-gray-400"
+              className="text-gray-400 animate-pulse"
               style={{
-                animation: `fadeInOut 3s ease-in-out infinite`,
                 animationDelay: `${i * 0.2}s`
               }}
             />
@@ -143,28 +137,14 @@ export function FloatingChart() {
               y2="100%"
               stroke="currentColor"
               strokeWidth="0.5"
-              className="text-gray-400"
+              className="text-gray-400 animate-pulse"
               style={{
-                animation: `fadeInOut 3s ease-in-out infinite`,
                 animationDelay: `${i * 0.3}s`
               }}
             />
           ))}
         </svg>
       </div>
-      
-      <style jsx>{`
-        @keyframes dash {
-          to {
-            stroke-dashoffset: 0;
-          }
-        }
-        
-        @keyframes fadeInOut {
-          0%, 100% { opacity: 0.1; }
-          50% { opacity: 0.3; }
-        }
-      `}</style>
     </div>
   );
 }
