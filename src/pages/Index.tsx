@@ -1,17 +1,16 @@
 
 import { useState } from 'react';
-import { LoginPage } from '@/components/Auth/LoginPage';
-import { SignupPage } from '@/components/Auth/SignupPage';
+import { AuthPage } from '@/components/Auth/AuthPage';
 import { LinkDematPage } from '@/components/Auth/LinkDematPage';
 import { DashboardPage } from '@/components/Dashboard/DashboardPage';
 import { TopChartsPage } from '@/components/Dashboard/TopChartsPage';
 import { AIAssistantButton } from '@/components/AIAssistant/AIAssistantButton';
 
-type AuthState = 'login' | 'signup' | 'link-demat' | 'dashboard';
+type AuthState = 'auth' | 'link-demat' | 'dashboard';
 type DashboardTab = 'dashboard' | 'topcharts';
 
 const Index = () => {
-  const [authState, setAuthState] = useState<AuthState>('login');
+  const [authState, setAuthState] = useState<AuthState>('auth');
   const [activeTab, setActiveTab] = useState<DashboardTab>('dashboard');
   const [userEmail, setUserEmail] = useState<string>('');
 
@@ -30,13 +29,13 @@ const Index = () => {
   const handleLinkDematComplete = () => {
     console.log('Demat account linked');
     setAuthState('dashboard');
-    setActiveTab('topcharts');
+    setActiveTab('dashboard');
   };
 
   const handleSkipDemat = () => {
     console.log('Demat linking skipped');
     setAuthState('dashboard');
-    setActiveTab('topcharts');
+    setActiveTab('dashboard');
   };
 
   const handleTabChange = (tab: DashboardTab) => {
@@ -44,25 +43,16 @@ const Index = () => {
   };
 
   const handleLogout = () => {
-    setAuthState('login');
+    setAuthState('auth');
     setUserEmail('');
     setActiveTab('dashboard');
   };
 
-  if (authState === 'login') {
+  if (authState === 'auth') {
     return (
-      <LoginPage
+      <AuthPage
         onLogin={handleLogin}
-        onSwitchToSignup={() => setAuthState('signup')}
-      />
-    );
-  }
-
-  if (authState === 'signup') {
-    return (
-      <SignupPage
         onSignup={handleSignup}
-        onSwitchToLogin={() => setAuthState('login')}
       />
     );
   }
