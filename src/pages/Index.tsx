@@ -48,11 +48,17 @@ const Index = () => {
     setActiveTab('dashboard');
   };
 
+  const handleStartTrading = () => {
+    // Navigate to auth page when "Start Trading" is clicked
+    setAuthState('auth');
+  };
+
   if (authState === 'auth') {
     return (
       <AuthPage
         onLogin={handleLogin}
         onSignup={handleSignup}
+        onStartTrading={handleStartTrading}
       />
     );
   }
@@ -74,12 +80,14 @@ const Index = () => {
           userEmail={userEmail}
           onTabChange={handleTabChange}
           onLogout={handleLogout}
+          onStartTrading={handleStartTrading}
         />
       ) : (
         <TopChartsPage
           userEmail={userEmail}
           onTabChange={handleTabChange}
           onLogout={handleLogout}
+          onStartTrading={handleStartTrading}
         />
       )}
       <AIAssistantButton />

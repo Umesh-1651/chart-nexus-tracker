@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, Activity, BarChart3, PieChart, Zap, Clock, Plus } from 'lucide-react';
@@ -9,9 +8,10 @@ interface DashboardPageProps {
   userEmail: string;
   onTabChange: (tab: 'dashboard' | 'topcharts') => void;
   onLogout: () => void;
+  onStartTrading?: () => void;
 }
 
-export function DashboardPage({ userEmail, onTabChange, onLogout }: DashboardPageProps) {
+export function DashboardPage({ userEmail, onTabChange, onLogout, onStartTrading }: DashboardPageProps) {
   const currentTime = new Date().toLocaleString('en-IN', {
     timeZone: 'Asia/Kolkata',
     hour: '2-digit',
@@ -30,7 +30,8 @@ export function DashboardPage({ userEmail, onTabChange, onLogout }: DashboardPag
         activeTab="dashboard" 
         onTabChange={onTabChange} 
         userEmail={userEmail} 
-        onLogout={onLogout} 
+        onLogout={onLogout}
+        onStartTrading={onStartTrading}
       />
       
       <div className="pt-24 px-4 sm:px-6 lg:px-8 pb-8">
