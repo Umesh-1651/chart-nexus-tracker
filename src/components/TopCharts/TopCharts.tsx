@@ -2,9 +2,16 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuLabel, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { TrendingUp, TrendingDown, Activity, RefreshCcw, Loader2, Database } from 'lucide-react';
+import { TrendingUp, TrendingDown, Activity, RefreshCcw, Loader2, Database, Filter } from 'lucide-react';
 
 type StockType = 'gainers' | 'losers' | 'active';
 type RowCount = 5 | 10 | 20;
@@ -65,6 +72,12 @@ export function TopCharts({ onDataFetch, className = '' }: TopChartsProps) {
     }
   };
 
+  const handleRowCountChange = (count: RowCount) => {
+    if (count !== rowCount) {
+      setRowCount(count);
+    }
+  };
+
   const getFilterIcon = (type: StockType) => {
     switch (type) {
       case 'gainers':
@@ -122,69 +135,96 @@ export function TopCharts({ onDataFetch, className = '' }: TopChartsProps) {
   const currentColor = getFilterColor(activeFilter);
 
   return (
-    <Card className={`bg-black/50 backdrop-blur-xl border-white/10 shadow-2xl hover:shadow-3xl hover:shadow-${currentColor}-500/5 transition-all duration-700 ${className}`}>
+    <Card className={`bg-black/50 backdrop-blur-xl border-white/10 shadow-2xl hover:shadow-3xl transition-all duration-700 ${className}`}>
       <CardHeader className="pb-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
-          <CardTitle className="text-white flex items-center gap-3 text-xl lg:text-2xl font-bold">
-            <div className={`p-2 rounded-lg bg-${currentColor}-500/20 border border-${currentColor}-500/30`}>
-              {getFilterIcon(activeFilter)}
-            </div>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          {/* Title */}
+          <CardTitle className="text-white text-xl lg:text-2xl font-bold">
             <span className="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-              {getFilterTitle(activeFilter)}
+              Current Market Trends
             </span>
           </CardTitle>
           
-          <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
-            {/* Filter Buttons */}
-            <div className="flex gap-2 p-1.5 bg-white/5 rounded-xl backdrop-blur-sm border border-white/10">
-              {(['gainers', 'losers', 'active'] as StockType[]).map((type) => {
-                const isActive = activeFilter === type;
-                const color = getFilterColor(type);
-                return (
-                  <Button
-                    key={type}
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleFilterChange(type)}
-                    className={`px-4 py-2.5 text-sm font-medium transition-all duration-300 rounded-lg ${
-                      isActive
-                        ? `bg-${color}-500/20 text-${color}-400 border border-${color}-500/40 shadow-lg shadow-${color}-500/20`
-                        : 'text-gray-400 hover:text-white hover:bg-white/10 hover:border-white/20'
-                    }`}
-                  >
-                    {getFilterIcon(type)}
-                    <span className="ml-2 hidden sm:inline">
-                      {type === 'gainers' ? 'Gainers' : type === 'losers' ? 'Losers' : 'Most Traded'}
-                    </span>
-                  </Button>
-                );
-              })}
-            </div>
+          {/* Filter Dropdown */}
+          <div className="flex items-center gap-3">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="bg-white/5 border-white/20 text-white hover:bg-white/10 hover:border-white/30 backdrop-blur-sm"
+                >
+                  <Filter className="w-4 h-4 mr-2" />
+                  Filter
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-black/95 backdrop-blur-xl border-white/20 rounded-lg shadow-2xl">
+                <DropdownMenuLabel className="text-gray-300 text-xs uppercase tracking-wider">Type</DropdownMenuLabel>
+                <DropdownMenuItem 
+                  onClick={() => handleFilterChange('gainers')}
+                  className={`text-white hover:bg-emerald-500/20 cursor-pointer ${activeFilter === 'gainers' ? 'bg-emerald-500/20' : ''}`}
+                >
+                  <TrendingUp className="w-4 h-4 mr-2 text-emerald-400" />
+                  Top Gainers
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => handleFilterChange('losers')}
+                  className={`text-white hover:bg-red-500/20 cursor-pointer ${activeFilter === 'losers' ? 'bg-red-500/20' : ''}`}
+                >
+                  <TrendingDown className="w-4 h-4 mr-2 text-red-400" />
+                  Top Losers
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => handleFilterChange('active')}
+                  className={`text-white hover:bg-blue-500/20 cursor-pointer ${activeFilter === 'active' ? 'bg-blue-500/20' : ''}`}
+                >
+                  <Activity className="w-4 h-4 mr-2 text-blue-400" />
+                  Most Traded
+                </DropdownMenuItem>
+                
+                <DropdownMenuSeparator className="bg-white/20" />
+                
+                <DropdownMenuLabel className="text-gray-300 text-xs uppercase tracking-wider">Count</DropdownMenuLabel>
+                <DropdownMenuItem 
+                  onClick={() => handleRowCountChange(5)}
+                  className={`text-white hover:bg-white/10 cursor-pointer ${rowCount === 5 ? 'bg-white/10' : ''}`}
+                >
+                  5 rows
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => handleRowCountChange(10)}
+                  className={`text-white hover:bg-white/10 cursor-pointer ${rowCount === 10 ? 'bg-white/10' : ''}`}
+                >
+                  10 rows
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => handleRowCountChange(20)}
+                  className={`text-white hover:bg-white/10 cursor-pointer ${rowCount === 20 ? 'bg-white/10' : ''}`}
+                >
+                  20 rows
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-            {/* Row Count & Refresh */}
-            <div className="flex gap-3 items-center">
-              <Select value={rowCount.toString()} onValueChange={(value) => setRowCount(Number(value) as RowCount)}>
-                <SelectTrigger className="w-20 h-10 bg-white/5 border-white/20 text-white text-sm font-medium rounded-lg backdrop-blur-sm hover:bg-white/10 transition-colors">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-black/95 backdrop-blur-xl border-white/20 rounded-lg">
-                  <SelectItem value="5" className="text-white hover:bg-white/10 rounded-md">5</SelectItem>
-                  <SelectItem value="10" className="text-white hover:bg-white/10 rounded-md">10</SelectItem>
-                  <SelectItem value="20" className="text-white hover:bg-white/10 rounded-md">20</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleRefresh}
-                disabled={isLoading}
-                className={`h-10 w-10 p-0 rounded-lg bg-white/5 border border-white/20 hover:bg-${currentColor}-500/20 hover:border-${currentColor}-500/40 disabled:opacity-50 transition-all duration-300`}
-              >
-                <RefreshCcw className={`w-4 h-4 ${isLoading ? 'animate-spin text-' + currentColor + '-400' : 'text-gray-400 hover:text-white'}`} />
-              </Button>
-            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleRefresh}
+              disabled={isLoading}
+              className={`h-10 w-10 p-0 rounded-lg bg-white/5 border border-white/20 hover:bg-${currentColor}-500/20 hover:border-${currentColor}-500/40 disabled:opacity-50 transition-all duration-300`}
+            >
+              <RefreshCcw className={`w-4 h-4 ${isLoading ? 'animate-spin text-' + currentColor + '-400' : 'text-gray-400 hover:text-white'}`} />
+            </Button>
           </div>
+        </div>
+
+        {/* Active Filter Display */}
+        <div className="flex items-center gap-2 mt-4">
+          <div className={`p-2 rounded-lg bg-${currentColor}-500/20 border border-${currentColor}-500/30`}>
+            {getFilterIcon(activeFilter)}
+          </div>
+          <span className={`text-${currentColor}-400 font-semibold`}>
+            {getFilterTitle(activeFilter)} ({rowCount} rows)
+          </span>
         </div>
       </CardHeader>
 
