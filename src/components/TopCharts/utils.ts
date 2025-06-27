@@ -3,15 +3,14 @@ import { StockType } from './types';
 
 export const formatChange = (change: number, changePercent: number) => {
   const isPositive = change >= 0;
-  const colorClass = isPositive ? 'text-emerald-400' : 'text-red-400';
   const symbol = isPositive ? '+' : '';
   
-  return (
-    <div className={`${colorClass} font-semibold text-sm`}>
-      <div>{symbol}₹{Math.abs(change).toFixed(2)}</div>
-      <div className="text-xs opacity-90">({symbol}{changePercent.toFixed(2)}%)</div>
-    </div>
-  );
+  return {
+    isPositive,
+    colorClass: isPositive ? 'text-emerald-400' : 'text-red-400',
+    changeText: `${symbol}₹${Math.abs(change).toFixed(2)}`,
+    percentText: `(${symbol}${changePercent.toFixed(2)}%)`
+  };
 };
 
 export const formatVolume = (volume?: number) => {
